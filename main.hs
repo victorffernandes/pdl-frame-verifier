@@ -3,8 +3,6 @@ import Data.List
 import Data.Text (splitOn)
 import GHC.TypeLits (ErrorMessage(Text))
 
-data pdl_validation = pdl_validation Bool String
-
 axiom :: Char -> [Char] -> [[Char]]
 axiom state pdl = [" ", " "]
 
@@ -14,7 +12,7 @@ sequential state pdl = [" ", " "]
 f :: Char -> [Char] -> [[Char]] -- retorna o erro e os estados possíveis
 f state pdl
   | length pdl == 1 = axiom state pdl
-  | ';' `elem` pdl = sequential ' ' "  "
+  | ';' `elem` pdl = do sequential ' ' "  "
   | otherwise = ["  ", "  "]
 
 split :: Eq a => a -> [a] -> [[a]]
