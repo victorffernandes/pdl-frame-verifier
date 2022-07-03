@@ -3,6 +3,18 @@ import Data.List
 import Data.Text (splitOn)
 import GHC.TypeLits (ErrorMessage(Text))
 
+axiom :: Char -> [Char] -> [[Char]]
+axiom state pdl = [" ", " "]
+
+sequential :: Char -> [Char] -> [[Char]]
+sequential state pdl = [" ", " "]
+
+f :: Char -> [Char] -> [[Char]] -- retorna o erro e os estados possíveis
+f state pdl
+  | length pdl == 1 = axiom state pdl
+  | ';' `elem` pdl = do sequential ' ' "  "
+  | otherwise = ["  ", "  "]
+
 split :: Eq a => a -> [a] -> [[a]]
 split d [] = []
 split d s = x : split d (drop 1 y) where (x,y) = span (/= d) s
