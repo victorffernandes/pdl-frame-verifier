@@ -3,17 +3,25 @@ import Data.List
 import Data.Text (splitOn)
 import GHC.TypeLits (ErrorMessage(Text))
 
-axiom :: Char -> [Char] -> [[Char]]
-axiom state pdl = [" ", " "]
 
-sequential :: Char -> [Char] -> [[Char]]
-sequential state pdl = [" ", " "]
+listMyRelations :: [[Char]] -> Char -> [[Char]]
+listMyRelations relations vertex = filter (\(c:_) -> c == vertex) relations
 
-f :: Char -> [Char] -> [[Char]] -- retorna o erro e os estados possíveis
-f state pdl
-  | length pdl == 1 = axiom state pdl
-  | ';' `elem` pdl = do sequential ' ' "  "
-  | otherwise = ["  ", "  "]
+getCharInPos :: [[Char]] -> Int -> Char
+getCharInPos list pos = list!!pos!!0
+
+axiom :: Char -> [[Char]] -> [[Char]]
+axiom state relations = map tail (listMyRelations relations state)
+
+sequential :: Char -> [Char] -> [[Char]] -> [[Char]]
+sequential state pdl relations = concat (map (\x -> f state x relations) (split ';' pdl))
+  
+
+f :: Char -> [Char] -> [[Char]] -> [[Char]] -- retorna o erro e os estados possíveis
+f state pdl relations
+  | length pdl == 1 = axiom state relations
+  | ';' `elem` pdl = sequential state pdl relations
+  | otherwise = [" "]
 
 split :: Eq a => a -> [a] -> [[a]]
 split d [] = []
@@ -25,11 +33,16 @@ inputConverter vertex relation pdl = [split ' ' vertex, split ' ' relation, spli
 main = do
     args <- getArgs                  -- IO [String]
     putStrLn "The arguments are:"
-    putStrLn (head args)
-    putStrLn (args!!1)
-    putStrLn (args!!2)
-    print(inputConverter (args!!0) (args!!1) (args!!2))
-    -- inputConverter args!!0 args!!1 args!!2
+    let inputs = ((inputConverter (args!!0) (args!!1) (args!!2)))
+    let states = (inputs!!0)
+    print(states)
+    
+
+    concat(map (\x -> f (x) (inputs!!2!!0) (inputs!!1)) (['a', 'b']))
+    print(f (inputs!!0!!0!!0) (inputs!!2!!0) (inputs!!1))
+
+
+
 
 
 
